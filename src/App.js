@@ -1,25 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 
-function App() {
+import { useShopify } from "./hooks";
+import { useSelector } from "react-redux";
+
+import "./App.css";
+
+import Home from "./components/shop/Home";
+import Products from "./components/shop/Products";
+import Cart from "./components/shop/Cart";
+import ProductView from "./components/shop/ProductView";
+
+const App = (props) => {
+  const {
+    createShop,
+    createCheckout,
+    fetchProducts,
+    // fetchCollection,
+  } = useShopify();
+
+  useEffect(() => {
+    createShop();
+    fetchProducts();
+    createCheckout();
+    // fetchCollection()
+  }, []);
+
+  const appState = useSelector((state) => state);
+
+  console.log(appState);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div id="App">
+        <Route exact path="/" render={() => <Redirect to="/Home" />} />
+        <Route path="/Home" component={Home} />
+        <Route path="/Home" component={Products} />
+        <Route path="/Product/:productId" component={ProductView} />
+        <Route path="/" component={Cart} />
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
